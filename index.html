@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithm Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Algorithm Visualizer</h1>
+    <h2>by Owen Ritchie</h2>
+    <div class="controls">
+        <select id="algorithm">
+            <option value="selection">Selection Sort</option>
+            <option value="merge">Merge Sort</option>
+            <option value="quick">QuickSort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="bubble">Bubble Sort</option>
+        </select>
+        <button id="visualizeButton">Visualize</button>
+        <label class="text">Speed: <span id="speedValue">7</span>x</label>
+        <input type="range" id="speedSlider" min="1" max="10" value="7" step="0.1">
+    </div>
+    <div id="container"></div>
+    <script src="scripts.js"></script>
+</body>
+</html>
