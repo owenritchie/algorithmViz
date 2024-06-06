@@ -71,10 +71,17 @@ function swap(arr, i, j) {
 }
 
 async function selectionSort(arr) {
-    for (let i = 0; i < arr.length; i++) {
-        arr[i].style.backgroundColor = '#ECBA82';
+    for (let i = 0; i < arr.length - 1; i++) {
         let minIndex = i;
         for (let j = i + 1; j < arr.length; j++) {
+            highlightBars(arr, [j, minIndex]);
+            const freq1 = parseInt(arr[j].style.height) * 10 + 100;
+            const freq2 = parseInt(arr[minIndex].style.height) * 10 + 100;
+            playSound(freq1, 0.1);
+            playSound(freq2, 0.1);
+            await new Promise(resolve => setTimeout(resolve, BASE_DELAY / speed));
+            resetBars(arr, [j, minIndex]);
+
             if (parseInt(arr[j].style.height) < parseInt(arr[minIndex].style.height)) {
                 minIndex = j;
             }
@@ -82,7 +89,6 @@ async function selectionSort(arr) {
         if (minIndex !== i) {
             await swap(arr, i, minIndex);
         }
-        arr[i].style.backgroundColor = getRandomGreenShade();
     }
 }
 
@@ -230,3 +236,4 @@ window.addEventListener('keydown', function(event) {
         event.preventDefault();
     }
 });
+
