@@ -8,6 +8,7 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let bars = [];
 let speed = 7;
 
+const BASE_DELAY = 200;
 
 function playSound(frequency, duration) {
     const oscillator = audioContext.createOscillator();
@@ -24,7 +25,7 @@ function playSound(frequency, duration) {
 function makeBars() {
     bars = [];
     container.innerHTML = '';
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 70; i++) {
         const bar = document.createElement('div');
         bar.classList.add('bar');
         bar.style.height = Math.floor(Math.random() * 100) + '%';
@@ -65,7 +66,7 @@ function swap(arr, i, j) {
             arr[j].style.height = tempHeight;
             resetBars(arr, [i, j]);
             resolve();
-        }, 1000 / speed);
+        }, BASE_DELAY / speed);
     });
 }
 
@@ -121,24 +122,32 @@ async function merge(left, right) {
     let result = [], i = 0, j = 0;
 
     while (i < left.length && j < right.length) {
-        highlightBars(bars, [i, j]);
+        highlightBars([left[i], right[j]], [0, 1]);
+        const freq1 = parseInt(left[i].style.height) * 10 + 100;
+        const freq2 = parseInt(right[j].style.height) * 10 + 100;
+        playSound(freq1, 0.1);
+        playSound(freq2, 0.1);
+
         if (parseInt(left[i].style.height) < parseInt(right[j].style.height)) {
             result.push(left[i++]);
         } else {
             result.push(right[j++]);
         }
-        await new Promise(resolve => setTimeout(resolve, 1000 / speed));
-        resetBars(bars, [i, j]);
+        await new Promise(resolve => setTimeout(resolve, BASE_DELAY / speed));
+        if (i > 0) resetBars([left[i - 1]], [0]);
+        if (j > 0) resetBars([right[j - 1]], [0]);
     }
 
     result = result.concat(left.slice(i)).concat(right.slice(j));
 
     for (let k = 0; k < result.length; k++) {
         bars[k] = result[k];
-        highlightBars(bars, [k]);
+        highlightBars([result[k]], [0]);
+        const freq = parseInt(result[k].style.height) * 10 + 100;
+        playSound(freq, 0.1);
         container.appendChild(result[k]);
-        await new Promise(resolve => setTimeout(resolve, 1000 / speed));
-        resetBars(bars, [k]);
+        await new Promise(resolve => setTimeout(resolve, BASE_DELAY / speed));
+        resetBars([result[k]], [0]);
     }
 
     return result;
@@ -178,6 +187,7 @@ async function partition(arr, left, right) {
 
 visualizeButton.addEventListener('click', () => {
     makeBars();
+    speed = speedSlider.value;
     const selectedAlgorithm = algorithmSelect.value;
     switch (selectedAlgorithm) {
         case 'selection':
